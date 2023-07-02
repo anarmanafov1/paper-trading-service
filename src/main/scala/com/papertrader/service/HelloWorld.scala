@@ -1,4 +1,4 @@
-package am
+package com.papertrader.service
 
 import cats.Applicative
 import cats.implicits._

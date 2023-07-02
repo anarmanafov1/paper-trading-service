@@ -1,4 +1,4 @@
-package am
+package com.papertrader.service
 
 import cats.effect.Sync
 import cats.implicits._

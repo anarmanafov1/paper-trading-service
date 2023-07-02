@@ -1,4 +1,4 @@
-package am
+package com.papertrader.service
 
 import cats.effect.{Async, Resource}
 import com.comcast.ip4s._
