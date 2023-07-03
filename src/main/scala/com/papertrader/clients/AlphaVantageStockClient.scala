@@ -1,20 +1,29 @@
 package com.papertrader.clients
+
 import cats.effect.IO
-import com.papertrader.models.Foo
-import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
-import org.http4s.{Status, Uri}
+import com.papertrader.conf.AppConf
+import com.papertrader.models.GlobalQuote
+import io.circe.generic.auto.exportDecoder
+import org.http4s.Uri
 import org.http4s.client.Client
 import org.http4s.implicits.http4sLiteralsSyntax
-import io.circe.generic.auto._
+
 object AlphaVantageStockClient extends HttpClient {
-  val uri: Uri = uri"https://www.alphavantage.co/query"
-  def getFoo()(implicit client: Client[IO]): IO[Either[String, Foo]] = get[Foo]()
 
+  val baseUrl: Uri = uri"https://www.alphavantage.co/query"
+  def getGlobalQuote(symbol: String)(implicit client: Client[IO], appConf: AppConf): IO[Either[String, GlobalQuote]] = {
+    val request = baseUrl
+      .withPath(path"query")
+      .withQueryParams(
+        Map(
+          "function" -> "GLOBAL_QUOTE",
+          "symbol" -> symbol,
+          "apikey" -> appConf.AlphaVantageApiKey
+        )
+      )
 
-
-
-
-  // https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=api_key
+    get[GlobalQuote](request)
+  }
 }
 
 
