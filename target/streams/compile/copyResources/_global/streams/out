@@ -1,0 +1,4 @@
+[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\home\Documents\paper-trading-service\src\main\resources\application.conf,C:\Users\home\Documents\paper-trading-service\target\scala-2.13\classes\application.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\home\Documents\paper-trading-service\src\main\resources\logback.xml,C:\Users\home\Documents\paper-trading-service\target\scala-2.13\classes\logback.xml)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\home\Documents\paper-trading-service\src\main\resources\META-INF\native-image\am\reflect-config.json,C:\Users\home\Documents\paper-trading-service\target\scala-2.13\classes\META-INF\native-image\am\reflect-config.json)[0m
