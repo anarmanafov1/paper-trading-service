@@ -1,6 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\home\Documents\paper-trading-service\src\main\scala\com\papertrader\Main.scala:21:27: Auto-application to `()` is deprecated. Supply the empty argument list `()` explicitly to invoke method routes,[0m
-[0m[[0m[31merror[0m] [0m[0mor remove the empty argument list from its definition (Java-defined methods are exempt).[0m
-[0m[[0m[31merror[0m] [0m[0mIn Scala 3, an unapplied method like this will be eta-expanded into a function.[0m
-[0m[[0m[31merror[0m] [0m[0m        PapertraderRoutes.routes[0m
-[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\home\Documents\paper-trading-service\src\main\scala\com\papertrader\service\models\GlobalQuote.scala:13:10: expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0mimplicit val decodeFoo: Decoder[GlobalQuote] = new Decoder[GlobalQuote] {[0m
+[0m[[0m[31merror[0m] [0m[0m         ^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

@@ -1,2 +1,55 @@
 [0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = C:\Users\home\Documents\paper-trading-service\target\scala-2.13\classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	GlobalQuote$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$anon$importedDecoder$macro$7$1$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$anon$importedDecoder$macro$7$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	GlobalQuote.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	GlobalQuote$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$anon$importedDecoder$macro$7$1$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$anon$importedDecoder$macro$7$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	GlobalQuote.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Decoders.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Decoders$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	GlobalQuote$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Decoders$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	GlobalQuote.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1$anon$importedEncoder$macro$7$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	StockService$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1$anon$importedEncoder$macro$7$1$$anon$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	StockService.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1$anon$importedEncoder$macro$7$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	StockService$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1$anon$importedEncoder$macro$7$1$$anon$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	StockService.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1$anon$importedEncoder$macro$19$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AlphaVantageStockClient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	StockService$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PapertraderRoutes$$anonfun$routes$1$anon$importedEncoder$macro$19$1$$anon$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	StockService.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: C:\Users\home\Documents\paper-trading-service\target\scala-2.13\classes.bak[0m
