@@ -1,4 +1,7 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\home\Documents\paper-trading-service\src\main\scala\com\papertrader\Main.scala:10:37: Unused import[0m
-[0m[[0m[31merror[0m] [0m[0mimport org.http4s.server.middleware.Logger[0m
-[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\home\Documents\paper-trading-service\src\main\scala\com\papertrader\clients\AlphaVantageStockClient.scala:13:47: Cannot decode into a value of type Foo, because no EntityDecoder[[+A]cats.effect.IO[A], Foo] instance could be found.[0m
+[0m[[0m[31merror[0m] [0m[0m      case Status.Successful(r) => r.attemptAs[Foo].leftMap(_.message).value[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\home\Documents\paper-trading-service\src\main\scala\com\papertrader\clients\AlphaVantageStockClient.scala:11:20: type parameter Foo defined in method get shadows class Foo defined in package models. You may want to rename your type parameter, or possibly remove it.[0m
+[0m[[0m[31merror[0m] [0m[0m  override def get[Foo]()(implicit client: Client[IO]): IO[Either[String, Foo]] =[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
