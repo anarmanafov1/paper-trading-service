@@ -1,7 +1,8 @@
 package papertrader
 
 import cats.effect.IO
-import com.papertrader.service.{HelloWorld, PapertraderRoutes}
+import com.papertrader.routes.PapertraderRoutes
+import com.papertrader.service.HelloWorld
 import org.http4s._
 import org.http4s.implicits._
 import munit.CatsEffectSuite
