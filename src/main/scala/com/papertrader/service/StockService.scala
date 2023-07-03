@@ -7,7 +7,7 @@ import com.papertrader.service.models.GlobalQuote
 import org.http4s.client.Client
 
 object StockService {
-  def getGlobalQuote(symbol: String)(implicit client: Client[IO], appConf: ApplicationConfig): IO[Either[String, GlobalQuote]] = {
+  def getGlobalQuote(symbol: String)(implicit client: Client[IO], appConf: ApplicationConfig): IO[Either[StockClientError, GlobalQuote]] = {
     AlphaVantageStockClient.getGlobalQuote(symbol)
   }
 }

@@ -1,7 +1,7 @@
 package com.papertrader.service.conf.routes
 
 import cats.effect.IO
-import com.papertrader.service.StockService
+import com.papertrader.service.{StockClientNotFoundError, StockClientParseError, StockClientServerError, StockService}
 import com.papertrader.service.conf.ApplicationConfig
 import io.circe.generic.auto.exportEncoder
 import io.circe.syntax.EncoderOps
@@ -18,7 +18,9 @@ object PapertraderRoutes {
     HttpRoutes.of[IO] {
       case GET -> Root / "global-quote" / symbol =>
         StockService.getGlobalQuote(symbol).flatMap {
-          case Left(e) => InternalServerError(e)
+          case Left(StockClientNotFoundError) => NotFound(s"Stock with symbol $symbol not found.")
+          case Left(StockClientServerError) => InternalServerError("Something went wrong.")
+          case Left(StockClientParseError) => InternalServerError("Something went wrong.")
           case Right(v) => Ok(v.asJson)
         }
     }
