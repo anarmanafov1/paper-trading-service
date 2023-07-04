@@ -20,8 +20,7 @@ object PapertraderRoutes {
       case GET -> Root / "global-quote" / symbol =>
         StockService.getGlobalQuote(symbol).flatMap {
           case Left(StockClientNotFoundError) => NotFound(s"Stock with symbol $symbol not found.")
-          case Left(StockClientServerError) => InternalServerError("Something went wrong.")
-          case Left(StockClientParseError) => InternalServerError("Something went wrong.")
+          case Left(StockClientServerError | StockClientParseError) => InternalServerError("Something went wrong.")
           case Right(v) => Ok(v.asJson)
         }
     }
