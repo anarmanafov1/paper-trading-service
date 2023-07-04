@@ -9,10 +9,11 @@ import org.http4s.HttpRoutes
 import org.http4s.client.Client
 import org.http4s.dsl.Http4sDsl
 import org.http4s.circe._
+import org.typelevel.log4cats.Logger
 
 object PapertraderRoutes {
 
-  def routes()(implicit client: Client[IO], appConf: ApplicationConfig): HttpRoutes[IO] = {
+  def routes()(implicit client: Client[IO], appConf: ApplicationConfig, logger: Logger[IO]): HttpRoutes[IO] = {
     val dsl = new Http4sDsl[IO]{}
     import dsl._
     HttpRoutes.of[IO] {

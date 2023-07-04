@@ -7,7 +7,7 @@ val MunitCatsEffectVersion = "1.0.7"
 lazy val root = (project in file("."))
   .settings(
     organization := "com.cp",
-    name := "papertrader",
+    name := "com",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.13.10",
     libraryDependencies ++= Seq(
@@ -19,6 +19,7 @@ lazy val root = (project in file("."))
       "org.scalameta"         %% "munit"               % MunitVersion           % Test,
       "org.typelevel"         %% "munit-cats-effect-3" % MunitCatsEffectVersion % Test,
       "ch.qos.logback"        %  "logback-classic"     % LogbackVersion         % Runtime,
+      "org.typelevel"         %% "log4cats-slf4j"      % "2.6.0",
       "com.github.pureconfig" %% "pureconfig"          % "0.17.1",
       "org.scalameta"         %% "svm-subs"            % "20.2.0"
     ),

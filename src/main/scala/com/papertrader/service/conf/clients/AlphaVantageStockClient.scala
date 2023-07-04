@@ -8,11 +8,12 @@ import org.http4s.Uri
 import org.http4s.client.Client
 import org.http4s.implicits.http4sLiteralsSyntax
 import com.papertrader.service.models.Decoders.decodeGlobalQuote
+import org.typelevel.log4cats.Logger
 
 object AlphaVantageStockClient extends HttpClient {
 
   val baseUrl: Uri = uri"https://www.alphavantage.co/query"
-  def getGlobalQuote(symbol: String)(implicit client: Client[IO], appConf: ApplicationConfig): IO[Either[StockClientError, GlobalQuote]] = {
+  def getGlobalQuote(symbol: String)(implicit client: Client[IO], appConf: ApplicationConfig, logger: Logger[IO]): IO[Either[StockClientError, GlobalQuote]] = {
     val request = baseUrl
       .withPath(path"query")
       .withQueryParams(
@@ -22,7 +23,6 @@ object AlphaVantageStockClient extends HttpClient {
           "apikey" -> appConf.AlphaVantageApiKey
         )
       )
-
     get[GlobalQuote](request)
   }
 }
