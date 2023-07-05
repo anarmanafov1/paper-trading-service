@@ -1,7 +1,7 @@
 package com.papertrader.service.conf
 
+import cats.MonadError
 import pureconfig.ConfigSource
-import pureconfig.error.ConfigReaderFailures
 import pureconfig.generic.auto._
 
 case class ApplicationConfig(
@@ -9,7 +9,12 @@ case class ApplicationConfig(
 )
 
 object ApplicationConfig {
-  def load: Either[ConfigReaderFailures, ApplicationConfig] =
-    ConfigSource.default.load[ApplicationConfig]
-
+  def load[F[_]]()(implicit monadError: MonadError[F, Throwable]): F[ApplicationConfig] =
+    monadError
+      .fromEither(
+        ConfigSource.default.load[ApplicationConfig]
+          .left
+          .map(e => new Throwable(e.prettyPrint())
+          )
+      )
 }

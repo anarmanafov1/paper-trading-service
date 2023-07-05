@@ -1,6 +1,6 @@
 package com.papertrader.service.conf.routes
 
-import cats.effect.IO
+import cats.effect.{Async, IO}
 import com.papertrader.service.{StockClientNotFoundError, StockClientParseError, StockClientServerError, StockService}
 import com.papertrader.service.conf.ApplicationConfig
 import io.circe.generic.auto.exportEncoder
@@ -13,10 +13,10 @@ import org.typelevel.log4cats.Logger
 
 object PapertraderRoutes {
 
-  def routes()(implicit client: Client[IO], appConf: ApplicationConfig, logger: Logger[IO]): HttpRoutes[IO] = {
-    val dsl = new Http4sDsl[IO]{}
+  def routes[F[_]: Async]()(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): HttpRoutes[F] = {
+    val dsl = new Http4sDsl[F]{}
     import dsl._
-    HttpRoutes.of[IO] {
+    HttpRoutes.of[F] {
       case GET -> Root / "global-quote" / symbol =>
         StockService.getGlobalQuote(symbol).flatMap {
           case Left(StockClientNotFoundError) => NotFound(s"Stock with symbol $symbol not found.")

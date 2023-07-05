@@ -1,6 +1,6 @@
 package com.papertrader.service.conf.clients
 
-import cats.effect.IO
+import cats.effect.Async
 import com.papertrader.service.StockClientError
 import com.papertrader.service.conf.ApplicationConfig
 import com.papertrader.service.models.GlobalQuote
@@ -13,7 +13,7 @@ import org.typelevel.log4cats.Logger
 object AlphaVantageStockClient extends HttpClient {
 
   val baseUrl: Uri = uri"https://www.alphavantage.co/query"
-  def getGlobalQuote(symbol: String)(implicit client: Client[IO], appConf: ApplicationConfig, logger: Logger[IO]): IO[Either[StockClientError, GlobalQuote]] = {
+  def getGlobalQuote[F[_]: Async](symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
     val request = baseUrl
       .withPath(path"query")
       .withQueryParams(
@@ -23,7 +23,7 @@ object AlphaVantageStockClient extends HttpClient {
           "apikey" -> appConf.AlphaVantageApiKey
         )
       )
-    get[GlobalQuote](request)
+    get[F, GlobalQuote](request)
   }
 }
 
