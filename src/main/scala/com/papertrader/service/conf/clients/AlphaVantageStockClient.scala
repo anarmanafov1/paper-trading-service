@@ -1,19 +1,22 @@
 package com.papertrader.service.conf.clients
 
-import cats.effect.Async
-import com.papertrader.service.StockClientError
+import cats.MonadError
+import cats.effect.kernel.Concurrent
 import com.papertrader.service.conf.ApplicationConfig
-import com.papertrader.service.models.GlobalQuote
+import com.papertrader.service.models.{Decoders, GlobalQuote}
 import org.http4s.Uri
 import org.http4s.client.Client
 import org.http4s.implicits.http4sLiteralsSyntax
-import com.papertrader.service.models.Decoders.decodeGlobalQuote
 import org.typelevel.log4cats.Logger
 
-object AlphaVantageStockClient extends HttpClient {
+class AlphaVantageStockClient[F[_]]()(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F], me: MonadError[F, Throwable], cz: Concurrent[F])
+  extends HttpClient
+    with Decoders[F] {
+
+  implicit val c: Concurrent[F] = cz
 
   val baseUrl: Uri = uri"https://www.alphavantage.co/query"
-  def getGlobalQuote[F[+_]: Async](symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
+  def getGlobalQuote(symbol: String): F[GlobalQuote] = {
     val request = baseUrl
       .withPath(path"query")
       .withQueryParams(
@@ -23,8 +26,6 @@ object AlphaVantageStockClient extends HttpClient {
           "apikey" -> appConf.AlphaVantageApiKey
         )
       )
-    get[F, GlobalQuote](request)
+    get[F, GlobalQuote](request)(client, decodeGlobalQuoteF, logger, me)
   }
 }
-
-

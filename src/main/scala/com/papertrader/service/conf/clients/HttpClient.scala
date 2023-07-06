@@ -1,26 +1,20 @@
 package com.papertrader.service.conf.clients
 
-import cats.Applicative
-import cats.effect.Async
-import cats.implicits.catsSyntaxFlatMapOps
-import com.papertrader.service.{StockClientError, StockClientNotFoundError, StockClientParseError, StockClientServerError}
-import io.circe.Decoder
-import org.http4s.{Status, Uri}
+import cats.MonadError
+import com.papertrader.service._
+import org.http4s.{EntityDecoder, Status, Uri}
 import org.http4s.client.Client
-import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.typelevel.log4cats.Logger
 
 trait HttpClient {
   val baseUrl: Uri
 
-  def get[F[+_]: Async, A](uri: Uri)(implicit client: Client[F], decoder: Decoder[A], logger: Logger[F], ap: Applicative[F]): F[Either[StockClientError, A]] = {
+  def get[F[_], A](uri: Uri)(implicit client: Client[F], entityDecoder: EntityDecoder[F, A], logger: Logger[F], me: MonadError[F, Throwable]): F[A] = {
     val uriForLog = uri.withQueryParam("apikey", "####").renderString
-    client.get[Either[StockClientError, A]](uri) {
-      case Status.Successful(r) =>
-        logger.error(s"Got OK response for request: $uriForLog") >> r.attemptAs[A].leftMap(_ => StockClientParseError).value
-      case r if r.status == Status.NotFound =>
-        logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $StockClientNotFoundError") >> ap.pure(Left(StockClientNotFoundError))
-      case v => logger.error(s"Unhandled response with status ${v.status}, responding with $StockClientServerError") >> ap.pure(Left(StockClientServerError))
+    client.get[A](uri) {
+      case Status.Successful(r) => me.flatMap(logger.error(s"Got OK response for request: $uriForLog"))(_ => me.flatMap(r.as[A])(_ => me.raiseError(StockClientParseError)))
+      case r if r.status == Status.NotFound => me.flatMap(logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $StockClientNotFoundError"))(_ => me.raiseError(StockClientNotFoundError))
+      case v => me.flatMap(logger.error(s"Unhandled response with status ${v.status}, responding with $StockClientServerError"))(_ => me.raiseError(StockClientServerError))
     }
   }
 }
