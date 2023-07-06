@@ -16,14 +16,16 @@ trait HttpClient {
       case Status.Successful(r) =>
         for {
           _ <- logger.error(s"Got OK response for request: $uriForLog")
-          parsed <- r.as[A].handleErrorWith(_ => me.raiseError(StockClientParseError))
+          maybeParsed <- r.attemptAs[A].value
+          parsed <- maybeParsed match {
+            case Left(decodeFailure) => logger.error(s"Failed to decode resp with err: ${decodeFailure.getMessage}") *> me.raiseError(StockClientParseError)
+            case Right(v) => logger.info(s"Successfully decoded response $v") *> me.pure(v)
+          }
         } yield parsed
       case r if r.status == Status.NotFound =>
-        logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $StockClientNotFoundError")
-          .flatMap(_ => me.raiseError(StockClientNotFoundError))
+        logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $StockClientNotFoundError") *> me.raiseError(StockClientNotFoundError)
       case v =>
-        logger.error(s"Unhandled response with status ${v.status}, responding with $StockClientServerError")
-          .flatMap(_ => me.raiseError(StockClientServerError))
+        logger.error(s"Unhandled response with status ${v.status}, responding with $StockClientServerError") *> me.raiseError(StockClientServerError)
     }
   }
 }
