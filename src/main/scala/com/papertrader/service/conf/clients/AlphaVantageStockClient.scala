@@ -13,7 +13,7 @@ import org.typelevel.log4cats.Logger
 object AlphaVantageStockClient extends HttpClient {
 
   val baseUrl: Uri = uri"https://www.alphavantage.co/query"
-  def getGlobalQuote[F[_]: Async](symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
+  def getGlobalQuote[F[+_]: Async](symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
     val request = baseUrl
       .withPath(path"query")
       .withQueryParams(

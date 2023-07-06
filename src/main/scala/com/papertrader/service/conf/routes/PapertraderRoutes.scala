@@ -1,6 +1,7 @@
 package com.papertrader.service.conf.routes
 
 import cats.effect.{Async, IO}
+import cats.implicits.toFlatMapOps
 import com.papertrader.service.{StockClientNotFoundError, StockClientParseError, StockClientServerError, StockService}
 import com.papertrader.service.conf.ApplicationConfig
 import io.circe.generic.auto.exportEncoder
