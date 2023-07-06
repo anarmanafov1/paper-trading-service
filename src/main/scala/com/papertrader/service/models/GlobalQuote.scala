@@ -12,12 +12,7 @@ case class GlobalQuote(
   high: BigDecimal
 )
 
-trait Decoders[F[_]] {
-  implicit val c: Concurrent[F]
-  implicit val decodeGlobalQuoteF: EntityDecoder[F, GlobalQuote] = accumulatingJsonOf[F, GlobalQuote](c, Decoders.decodeGlobalQuote)
-}
-
-object Decoders {
+class Decoders[F[_]]()(implicit c: Concurrent[F]) {
   implicit val decodeGlobalQuote: Decoder[GlobalQuote] = new Decoder[GlobalQuote] {
     final def apply(c: HCursor): Decoder.Result[GlobalQuote] = {
       val innerObject = c.downField("Global Quote")
@@ -29,4 +24,5 @@ object Decoders {
       } yield GlobalQuote(symbol, price, low, high)
     }
   }
+  implicit val decodeGlobalQuoteF: EntityDecoder[F, GlobalQuote] = accumulatingJsonOf[F, GlobalQuote](c, decodeGlobalQuote)
 }
