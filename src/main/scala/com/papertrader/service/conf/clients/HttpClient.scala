@@ -1,8 +1,8 @@
 package com.papertrader.service.conf.clients
 
-import cats.{Applicative, FlatMap}
+import cats.Applicative
 import cats.effect.Async
-import cats.implicits.{catsSyntaxFlatMapOps}
+import cats.implicits.catsSyntaxFlatMapOps
 import com.papertrader.service.{StockClientError, StockClientNotFoundError, StockClientParseError, StockClientServerError}
 import io.circe.Decoder
 import org.http4s.{Status, Uri}

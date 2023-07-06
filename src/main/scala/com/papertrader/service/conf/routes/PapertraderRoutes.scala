@@ -1,6 +1,6 @@
 package com.papertrader.service.conf.routes
 
-import cats.effect.{Async, IO}
+import cats.effect.Async
 import cats.implicits.toFlatMapOps
 import com.papertrader.service.{StockClientNotFoundError, StockClientParseError, StockClientServerError, StockService}
 import com.papertrader.service.conf.ApplicationConfig
@@ -14,7 +14,7 @@ import org.typelevel.log4cats.Logger
 
 object PapertraderRoutes {
 
-  def routes[F[_]: Async]()(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): HttpRoutes[F] = {
+  def routes[F[+_]: Async]()(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {

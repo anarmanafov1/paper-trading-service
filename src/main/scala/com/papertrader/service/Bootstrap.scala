@@ -10,7 +10,7 @@ import org.http4s.implicits._
 import com.papertrader.service.conf.logger.ApplicationLogger
 
 object Bootstrap {
-  def bootstrap[F[_]: Async]: Resource[F, Unit] = {
+  def bootstrap[F[+_]: Async]: Resource[F, Unit] = {
     for {
       implicit0(ac: ApplicationConfig) <- Resource.eval(ApplicationConfig.load())
       implicit0(c: Client[F]) <- Resource.pure(JavaNetClientBuilder[F].create)
