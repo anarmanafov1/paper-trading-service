@@ -14,12 +14,12 @@ import org.typelevel.log4cats.Logger
 
 object PapertraderRoutes {
 
-  def routes[F[+_]: Async]()(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): HttpRoutes[F] = {
+  def routes[F[+_]: Async](stockService: StockService[F])(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "global-quote" / symbol =>
-        StockService.getGlobalQuote(symbol).flatMap {
+        stockService.getGlobalQuote(symbol).flatMap {
           case Left(StockClientNotFoundError) => NotFound(s"Stock with symbol $symbol not found.")
           case Left(StockClientServerError | StockClientParseError) => InternalServerError("Something went wrong.")
           case Right(v) => Ok(v.asJson)

@@ -1,18 +1,27 @@
 package com.papertrader.service
 
-import cats.effect.Async
+import cats.effect.{Async, Ref}
+import cats.implicits.toFunctorOps
 import com.papertrader.service.conf.ApplicationConfig
 import com.papertrader.service.conf.clients.AlphaVantageStockClient
 import com.papertrader.service.models.GlobalQuote
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
+import java.util.UUID
 
-object StockService {
-  def getGlobalQuote[F[+_]: Async](symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
+class StockService[F[+_]: Async]()(implicit basketRef: Ref[F, Map[UUID, Map[String, Int]]]) {
+  def getGlobalQuote(symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
     AlphaVantageStockClient.getGlobalQuote(symbol)
   }
-//  def addToBasket(symbol: String, quantity: Int)(basketRef: Ref[IO, Map[String, String]]) = {
-//    basketRef.update(f => f + ("a" -> "b"))
-//  }
-//  def viewBasket(symbol: String, quantity: Int) = ???
+
+  // TODO: Review and simplify map logic
+  def addToBasket(symbol: String, quantity: Int, userId: UUID): F[Unit] = {
+    basketRef.update(userToBasket => userToBasket.get(userId) match {
+      case Some(basket) if basket.contains(symbol) => basket ++ (symbol, basket(symbol) + quantity)
+      case Some(basket) => userToBasket ++ Map[UUID, Map[String, Int]](userId, (basket ++ Map[String, Int](symbol, quantity)))
+      case None => userToBasket ++ Map[UUID, Map[String, Int]](userId, Map.empty)
+    })
+  }
+
+  def viewBasket(userId: UUID): F[Map[String, Int]] = basketRef.get.map(basket => basket.getOrElse(userId, Map.empty))
 }
