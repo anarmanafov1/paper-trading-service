@@ -9,7 +9,7 @@ import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
 import java.util.UUID
 
-class StockService[F[+_]: Async]()(implicit basketRef: Ref[F, Map[UUID, Map[String, Int]]]) {
+class StockService[F[+_]: Async](basketRef: Ref[F, Map[UUID, Map[String, Int]]]) {
   def getGlobalQuote(symbol: String)(implicit client: Client[F], appConf: ApplicationConfig, logger: Logger[F]): F[Either[StockClientError, GlobalQuote]] = {
     AlphaVantageStockClient.getGlobalQuote(symbol)
   }
@@ -17,8 +17,10 @@ class StockService[F[+_]: Async]()(implicit basketRef: Ref[F, Map[UUID, Map[Stri
   // TODO: Review and simplify map logic
   def addToBasket(symbol: String, quantity: Int, userId: UUID): F[Unit] = {
     basketRef.update(userToBasket => userToBasket.get(userId) match {
-      case Some(basket) if basket.contains(symbol) => basket ++ (symbol, basket(symbol) + quantity)
-      case Some(basket) => userToBasket ++ Map[UUID, Map[String, Int]](userId, (basket ++ Map[String, Int](symbol, quantity)))
+      case Some(basket) if basket.contains(symbol) =>
+        val currentQuantity = basket(symbol)
+        userToBasket ++ Map[UUID, Map[String, Int]](userId, basket ++ Map(symbol -> currentQuantity))
+      case Some(basket) => userToBasket ++ Map[UUID, Map[String, Int]](userId -> (basket ++ Map[String, Int](symbol, quantity)))
       case None => userToBasket ++ Map[UUID, Map[String, Int]](userId, Map.empty)
     })
   }
