@@ -21,7 +21,8 @@ lazy val root = (project in file("."))
       "ch.qos.logback"        %  "logback-classic"     % LogbackVersion         % Runtime,
       "org.typelevel"         %% "log4cats-slf4j"      % "2.6.0",
       "com.github.pureconfig" %% "pureconfig"          % "0.17.1",
-      "org.scalameta"         %% "svm-subs"            % "20.2.0"
+      "org.scalameta"         %% "svm-subs"            % "20.2.0",
+      "org.scalatestplus"     %% "mockito-4-11"        % "3.2.16.0" % "test"
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
