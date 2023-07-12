@@ -1,4 +1,4 @@
-package com.papertrader.service.conf.logger
+package com.papertrader.service.util.logger
 
 import cats.effect.kernel.Sync
 import org.typelevel.log4cats.Logger

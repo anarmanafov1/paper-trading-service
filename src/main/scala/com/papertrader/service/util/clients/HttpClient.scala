@@ -1,4 +1,4 @@
-package com.papertrader.service.conf.clients
+package com.papertrader.service.util.clients
 
 import cats.MonadError
 import cats.implicits._

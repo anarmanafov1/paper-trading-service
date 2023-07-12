@@ -3,13 +3,13 @@ package com.papertrader.service
 import cats.effect.{Async, Ref, Resource}
 import com.comcast.ip4s._
 import com.papertrader.service.conf.ApplicationConfig
-import com.papertrader.service.conf.clients.AlphaVantageStockClient
 import com.papertrader.service.conf.routes.PapertraderRoutes
 import org.http4s.client.{Client, JavaNetClientBuilder}
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
-import com.papertrader.service.conf.logger.ApplicationLogger
 import com.papertrader.service.models.Decoders
+import com.papertrader.service.util.clients.AlphaVantageStockClient
+import com.papertrader.service.util.logger.ApplicationLogger
 import org.typelevel.log4cats.Logger
 import java.util.UUID
 

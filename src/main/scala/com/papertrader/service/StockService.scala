@@ -3,8 +3,8 @@ package com.papertrader.service
 import cats.MonadError
 import cats.effect.Ref
 import cats.implicits._
-import com.papertrader.service.conf.clients.AlphaVantageStockClient
-import com.papertrader.service.models.GlobalQuote
+import com.papertrader.service.models.{GlobalQuote, Item}
+import com.papertrader.service.util.clients.AlphaVantageStockClient
 
 import java.util.UUID
 
@@ -13,11 +13,11 @@ class StockService[F[_]](alphaVantageStockClient: AlphaVantageStockClient[F], ba
     alphaVantageStockClient.getGlobalQuote(symbol)
   }
 
-  def addToBasket(symbol: String, quantity: Int, userId: UUID): F[Unit] = {
+  def addToBasket(item: Item, userId: UUID): F[Unit] = {
     basketRef.update(
       userToBasket => userToBasket.get(userId) match {
-        case Some(basket) if basket.contains(symbol) => userToBasket ++ Map(userId -> (basket ++ Map(symbol -> basket(symbol))))
-        case Some(basket) => userToBasket ++ Map(userId -> (basket ++ Map(symbol -> quantity)))
+        case Some(basket) if basket.contains(item.symbol) => userToBasket ++ Map(userId -> (basket ++ Map(item.symbol -> basket(item.symbol))))
+        case Some(basket) => userToBasket ++ Map(userId -> (basket ++ Map(item.symbol -> item.quantity)))
         case None => userToBasket ++ Map(userId -> Map.empty)
       }
     )
