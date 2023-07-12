@@ -34,20 +34,3 @@ class StockServiceSpec extends CatsEffectSuite with Fixture {
     assertEquals(r, Left(HttpClientNotFoundError))
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
