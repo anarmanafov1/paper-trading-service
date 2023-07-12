@@ -1,6 +1,9 @@
 package com.papertrader.service.conf
 
 import cats.MonadError
+import cats.implicits._
+import com.papertrader.service.FailedToLoadConfError
+import org.typelevel.log4cats.Logger
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
@@ -9,12 +12,9 @@ case class ApplicationConfig(
 )
 
 object ApplicationConfig {
-  def load[F[_]]()(implicit monadError: MonadError[F, Throwable]): F[ApplicationConfig] =
-    monadError
-      .fromEither(
-        ConfigSource.default.load[ApplicationConfig]
-          .left
-          .map(e => new Throwable(e.prettyPrint())
-          )
-      )
+  def load[F[_]]()(implicit me: MonadError[F, Throwable], logger: Logger[F]): F[ApplicationConfig] = for {
+      conf <- me
+        .fromEither(ConfigSource.default.load[ApplicationConfig].left.map(failure => new Throwable(failure.prettyPrint())))
+        .handleErrorWith(e => logger.error(e.getMessage) *> me.raiseError(FailedToLoadConfError))
+    } yield conf
 }

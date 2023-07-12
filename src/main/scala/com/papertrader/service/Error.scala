@@ -10,4 +10,6 @@ sealed trait RequestValidationError extends StockClientError
 
 case class MissingHeaderError(msg: String) extends RequestValidationError
 case class InvalidHeaderError(msg: String) extends RequestValidationError
-case class MalformedBody(msg: String) extends RequestValidationError
+case class MalformedBodyError(msg: String) extends RequestValidationError
+
+case object FailedToLoadConfError extends Error

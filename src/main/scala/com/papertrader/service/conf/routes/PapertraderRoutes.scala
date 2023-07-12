@@ -37,7 +37,7 @@ object PapertraderRoutes {
           r <- Created()
         } yield r
       }.handleErrorWith {
-        case e: MalformedBody => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
+        case e: MalformedBodyError => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
         case e: MissingHeaderError => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
         case e: InvalidHeaderError => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
         case e => logger.error(s"Unhandled error with msg: ${e.getMessage}, responding with InternalServerError") *>

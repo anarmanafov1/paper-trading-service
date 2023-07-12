@@ -23,7 +23,7 @@ object RequestValidation {
 
   def validateBodyAsItem[F[_]: Async](r: Request[F])(implicit me: MonadError[F, Throwable]): F[Item] = for {
     json <- r.asJson
-    item <- me.fromEither(json.as[Item].left.map(e => MalformedBody(s"Body malformed, msg: ${e.getMessage()}")))
+    item <- me.fromEither(json.as[Item].left.map(e => MalformedBodyError(s"Body malformed, msg: ${e.getMessage()}")))
   } yield item
 
 }
