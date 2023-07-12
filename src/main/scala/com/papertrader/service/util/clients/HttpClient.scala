@@ -13,7 +13,7 @@ trait HttpClient {
   def get[F[_], A](uri: Uri)(implicit client: Client[F], entityDecoder: EntityDecoder[F, A], logger: Logger[F], me: MonadError[F, Throwable]): F[A] = {
     val uriForLog = uri.withQueryParam("apikey", "####").renderString
     client.get[A](uri) {
-      case Status.Successful(r) =>
+      case r if r.status == Status.Ok =>
         for {
           _ <- logger.error(s"Got OK response for request: $uriForLog")
           maybeParsed <- r.attemptAs[A].value
@@ -25,7 +25,11 @@ trait HttpClient {
       case r if r.status == Status.NotFound =>
         logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $HttpClientNotFoundError") *> me.raiseError(HttpClientNotFoundError)
       case v =>
-        logger.error(s"Unhandled response with status ${v.status}, responding with $HttpClientServerError") *> me.raiseError(HttpClientServerError)
-    }.handleErrorWith(e => logger.error(s"Error running HttpClient get, responding with $HttpClientServerError") *> me.raiseError(HttpClientServerError))
+        logger.error(s"Unhandled response with status ${v.status}, responding with $HttpClientServerError") *>
+          me.raiseError(HttpClientServerError(s"Unhandled HTTP response ${v.status}"))
+    }.handleErrorWith(e =>
+      logger.error(s"Error running HttpClient get, responding with $HttpClientServerError") *>
+        me.raiseError(HttpClientServerError(s"HTTP Client error: ${e.getMessage}"))
+    )
   }
 }

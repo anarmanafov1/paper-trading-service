@@ -4,7 +4,7 @@ sealed trait Error extends Throwable
 sealed trait HttpClientError extends Error
 case object HttpClientNotFoundError extends HttpClientError
 case object HttpClientParseError extends HttpClientError
-case object HttpClientServerError extends HttpClientError
+case class HttpClientServerError(msg: String) extends HttpClientError
 
 sealed trait RequestValidationError extends HttpClientError
 

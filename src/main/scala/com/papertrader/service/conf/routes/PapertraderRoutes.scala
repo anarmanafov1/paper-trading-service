@@ -23,10 +23,10 @@ object PapertraderRoutes {
         stockService.getGlobalQuote(symbol)
           .flatMap(v => Ok(v.asJson))
           .handleErrorWith {
-            case HttpClientNotFoundError => NotFound(s"Stock with symbol $symbol not found.")
-            case HttpClientServerError => ServiceUnavailable("Failed to retrieve stock.")
-            case HttpClientParseError => InternalServerError("Error processing stock.")
-            case e: Throwable => logger.error(s"Unhandles error with message: ${e.getMessage}") *> InternalServerError("Something went wrong.")
+            case HttpClientNotFoundError => NotFound(ErrorResponse(s"Stock with symbol $symbol not found.").asJson)
+            case HttpClientParseError => InternalServerError(ErrorResponse("Error processing stock.").asJson)
+            case _: HttpClientServerError => ServiceUnavailable(ErrorResponse("Failed to retrieve stock.").asJson)
+            case e: Throwable => logger.error(s"Unhandles error with message: ${e.getMessage}") *> InternalServerError(ErrorResponse("Something went wrong.").asJson)
         }
 
       case r@POST -> Root / "basket" => {
