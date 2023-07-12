@@ -22,9 +22,10 @@ class StockServiceSpec extends CatsEffectSuite with Fixture {
   }
 
   test("service.getGlobalQuote returns HttpClientServerError when stock client returns HttpClientServerError") {
-    when(fakeAlphaVantageStockClient.getGlobalQuote(anyString())).thenReturn(Left(HttpClientServerError))
+    val error = HttpClientServerError("Some Message")
+    when(fakeAlphaVantageStockClient.getGlobalQuote(anyString())).thenReturn(Left(error))
     val r = service.getGlobalQuote("ibm")
-    assertEquals(r, Left(HttpClientServerError))
+    assertEquals(r, Left(error))
   }
 
   test("service.getGlobalQuote returns HttpClientNotFoundError when stock client returns HttpClientNotFoundError") {
