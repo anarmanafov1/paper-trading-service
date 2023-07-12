@@ -18,14 +18,14 @@ trait HttpClient {
           _ <- logger.error(s"Got OK response for request: $uriForLog")
           maybeParsed <- r.attemptAs[A].value
           parsed <- maybeParsed match {
-            case Left(decodeFailure) => logger.error(s"Failed to decode resp with err: ${decodeFailure.getMessage}") *> me.raiseError(StockClientParseError)
+            case Left(decodeFailure) => logger.error(s"Failed to decode resp with err: ${decodeFailure.getMessage}") *> me.raiseError(HttpClientParseError)
             case Right(v) => logger.info(s"Successfully decoded response $v") *> me.pure(v)
           }
         } yield parsed
       case r if r.status == Status.NotFound =>
-        logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $StockClientNotFoundError") *> me.raiseError(StockClientNotFoundError)
+        logger.error(s"Got NotFound response for request with api key removed: $uriForLog, responding with $HttpClientNotFoundError") *> me.raiseError(HttpClientNotFoundError)
       case v =>
-        logger.error(s"Unhandled response with status ${v.status}, responding with $StockClientServerError") *> me.raiseError(StockClientServerError)
-    }
+        logger.error(s"Unhandled response with status ${v.status}, responding with $HttpClientServerError") *> me.raiseError(HttpClientServerError)
+    }.handleErrorWith(e => logger.error(s"Error running HttpClient get, responding with $HttpClientServerError") *> me.raiseError(HttpClientServerError))
   }
 }

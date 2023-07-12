@@ -1,12 +1,12 @@
 package com.papertrader.service
 
 sealed trait Error extends Throwable
-sealed trait StockClientError extends Error
-case object StockClientNotFoundError extends StockClientError
-case object StockClientParseError extends StockClientError
-case object StockClientServerError extends StockClientError
+sealed trait HttpClientError extends Error
+case object HttpClientNotFoundError extends HttpClientError
+case object HttpClientParseError extends HttpClientError
+case object HttpClientServerError extends HttpClientError
 
-sealed trait RequestValidationError extends StockClientError
+sealed trait RequestValidationError extends HttpClientError
 
 case class MissingHeaderError(msg: String) extends RequestValidationError
 case class InvalidHeaderError(msg: String) extends RequestValidationError
