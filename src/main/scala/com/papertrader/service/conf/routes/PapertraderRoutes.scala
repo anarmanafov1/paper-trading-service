@@ -3,7 +3,6 @@ package com.papertrader.service.conf.routes
 import cats.MonadError
 import cats.data.NonEmptyList
 import cats.effect.Async
-import cats.effect.kernel.Concurrent
 import cats.implicits.{catsSyntaxApplicativeError, catsSyntaxFlatMapOps, toFlatMapOps}
 import com.papertrader.service._
 import com.papertrader.service.models.Item
@@ -35,15 +34,15 @@ object PapertraderRoutes {
           case Left(e: Throwable) => logger.error(s"Unhandles error with message: ${e.getMessage}") >> InternalServerError("Something went wrong.")
         }
 
-      case r@POST -> Root / "cart" => {
+      case r@POST -> Root / "basket" => {
         for {
           json <- r.asJson
           item <- me.fromEither(json.as[Item].left.map(e => MalformedBody(s"Body malformed, msg: ${e.getMessage()}")))
-          userHeader: Option[NonEmptyList[Header.Raw]] = r.headers.get(CIString("user-id"))
+          userHeader: Option[NonEmptyList[Header.Raw]] <- me.pure(r.headers.get(CIString("user-id")))
           userIdRaw <- me.fromEither(userHeader.map(_.head).toRight(MissingHeaderError("header user-id not found")))
           userId <- me.fromTry(Try(UUID.fromString(userIdRaw.value))).adaptError(e => InvalidHeaderError(s"User Id header provided not valid UUID - msg: ${e.getMessage}"))
           _ <- stockService.addToBasket(item, userId)
-          r <- NoContent()
+          r <- Created()
         } yield r
       }.handleErrorWith {
         case e: MalformedBody => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
@@ -52,6 +51,24 @@ object PapertraderRoutes {
         case e => logger.error(s"Unhandled error with msg: ${e.getMessage}, responding with InternalServerError") *>
           InternalServerError(ErrorResponse("Something went wrong on our side.").asJson)
       }
+
+      case r@GET -> Root / "basket" => {
+        for {
+          userHeader: Option[NonEmptyList[Header.Raw]] <- me.pure(r.headers.get(CIString("user-id")))
+          userIdRaw <- me.fromEither(userHeader.map(_.head).toRight(MissingHeaderError("header user-id not found")))
+          userId <- me.fromTry(Try(UUID.fromString(userIdRaw.value))).adaptError(e => InvalidHeaderError(s"User Id header provided not valid UUID - msg: ${e.getMessage}"))
+          basket <- stockService.viewBasket(userId)
+          r <- Ok(basket.asJson)
+        } yield r
+      }.handleErrorWith {
+        case e: MalformedBody => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
+        case e: MissingHeaderError => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
+        case e: InvalidHeaderError => logger.error(e.msg) *> BadRequest(ErrorResponse(e.msg).asJson)
+        case e => logger.error(s"Unhandled error with msg: ${e.getMessage}, responding with InternalServerError") *>
+          InternalServerError(ErrorResponse("Something went wrong on our side.").asJson)
+      }
+
+
     }
   }
 }
