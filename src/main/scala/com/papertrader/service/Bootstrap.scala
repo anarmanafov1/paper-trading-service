@@ -11,7 +11,6 @@ import com.papertrader.service.models.Decoders
 import com.papertrader.service.util.clients.AlphaVantageStockClient
 import com.papertrader.service.util.logger.ApplicationLogger
 import org.typelevel.log4cats.Logger
-
 import java.util.UUID
 
 object Bootstrap {
