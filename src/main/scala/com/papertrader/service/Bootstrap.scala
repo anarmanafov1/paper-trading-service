@@ -18,13 +18,18 @@ object Bootstrap {
     implicit val decoders: Decoders[F] = new Decoders()
     implicit val client: Client[F] = JavaNetClientBuilder[F].create
     implicit val logger: Logger[F] = ApplicationLogger.getLogger[F]
-    implicit val stockClient: AlphaVantageStockClient[F] = new AlphaVantageStockClient[F] {}
+    implicit val stockClient: AlphaVantageStockClient[F] =
+      new AlphaVantageStockClient[F] {}
 
     for {
-      implicit0(appConf: ApplicationConfig) <- Resource.eval(ApplicationConfig.load())
-      implicit0(basketRef: Ref[F, Map[UUID, Map[String, Int]]]) <- Resource.eval(Ref.of[F, Map[UUID, Map[String, Int]]](Map.empty))
+      implicit0(appConf: ApplicationConfig) <- Resource.eval(
+        ApplicationConfig.load()
+      )
+      implicit0(basketRef: Ref[F, Map[UUID, Map[String, Int]]]) <- Resource
+        .eval(Ref.of[F, Map[UUID, Map[String, Int]]](Map.empty))
       _ <-
-        EmberServerBuilder.default[F]
+        EmberServerBuilder
+          .default[F]
           .withHost(ipv4"0.0.0.0")
           .withPort(port"8080")
           .withHttpApp(PapertraderRoutes.routes().orNotFound)

@@ -11,12 +11,17 @@ import java.util.UUID
 import com.papertrader.service.Error
 
 trait Fixture {
-  implicit val me: MonadError[Either[Error, *], Throwable] = mock[MonadError[Either[Error, *], Throwable]]
-  implicit val mockClient: Client[Either[Error, *]] = mock[Client[Either[Error, *]]]
+  implicit val me: MonadError[Either[Error, *], Throwable] =
+    mock[MonadError[Either[Error, *], Throwable]]
+  implicit val mockClient: Client[Either[Error, *]] =
+    mock[Client[Either[Error, *]]]
   implicit val mockConf: ApplicationConfig = mock[ApplicationConfig]
   implicit val logger: Logger[Either[Error, *]] = mock[Logger[Either[Error, *]]]
-  implicit val decoders: Decoders[Either[Error, *]] = mock[Decoders[Either[Error, *]]]
-  implicit val fakeBasketRef: Ref[Either[Error, *], Map[UUID, Map[String, Int]]] = mock[Ref[Either[Error, *], Map[UUID, Map[String, Int]]]]
+  implicit val decoders: Decoders[Either[Error, *]] =
+    mock[Decoders[Either[Error, *]]]
+  implicit val fakeBasketRef
+      : Ref[Either[Error, *], Map[UUID, Map[String, Int]]] =
+    mock[Ref[Either[Error, *], Map[UUID, Map[String, Int]]]]
 
   val userId: UUID = UUID.randomUUID()
   val userId2: UUID = UUID.randomUUID()

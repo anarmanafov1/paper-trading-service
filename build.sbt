@@ -19,6 +19,7 @@ lazy val root = (project in file("."))
       "org.typelevel"         %% "log4cats-slf4j"      % "2.6.0",
       "com.github.pureconfig" %% "pureconfig"          % "0.17.1",
       "org.scalameta"         %% "svm-subs"            % "20.2.0",
+      "org.scalameta"         %  "sbt-scalafmt"        % "3.7.9",
       "org.scalameta"         %% "munit"               % MunitVersion           % Test,
       "org.typelevel"         %% "munit-cats-effect-3" % MunitCatsEffectVersion % Test,
       "ch.qos.logback"        %  "logback-classic"     % LogbackVersion         % Runtime,

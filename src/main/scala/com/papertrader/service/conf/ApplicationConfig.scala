@@ -8,13 +8,23 @@ import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
 case class ApplicationConfig(
-  AlphaVantageApiKey: String
+    AlphaVantageApiKey: String
 )
 
 object ApplicationConfig {
-  def load[F[_]]()(implicit me: MonadError[F, Throwable], logger: Logger[F]): F[ApplicationConfig] = for {
-      conf <- me
-        .fromEither(ConfigSource.default.load[ApplicationConfig].left.map(failure => new Throwable(failure.prettyPrint())))
-        .handleErrorWith(e => logger.error(e.getMessage) *> me.raiseError(FailedToLoadConfError))
-    } yield conf
+  def load[F[_]]()(implicit
+      me: MonadError[F, Throwable],
+      logger: Logger[F]
+  ): F[ApplicationConfig] = for {
+    conf <- me
+      .fromEither(
+        ConfigSource.default
+          .load[ApplicationConfig]
+          .left
+          .map(failure => new Throwable(failure.prettyPrint()))
+      )
+      .handleErrorWith(e =>
+        logger.error(e.getMessage) *> me.raiseError(FailedToLoadConfError)
+      )
+  } yield conf
 }

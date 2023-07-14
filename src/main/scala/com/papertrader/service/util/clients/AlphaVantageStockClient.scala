@@ -13,12 +13,13 @@ trait AlphaVantageStockClient[F[_]] extends HttpClient {
   val baseUrl: Uri = uri"https://www.alphavantage.co/query"
 
   def getGlobalQuote(
-    symbol: String
-  )(implicit client: Client[F],
-    appConf: ApplicationConfig,
-    logger: Logger[F],
-    me: MonadError[F, Throwable],
-    decoders: Decoders[F]
+      symbol: String
+  )(implicit
+      client: Client[F],
+      appConf: ApplicationConfig,
+      logger: Logger[F],
+      me: MonadError[F, Throwable],
+      decoders: Decoders[F]
   ): F[GlobalQuote] = {
     val request = baseUrl
       .withPath(path"query")
@@ -29,6 +30,11 @@ trait AlphaVantageStockClient[F[_]] extends HttpClient {
           "apikey" -> appConf.AlphaVantageApiKey
         )
       )
-    get[F, GlobalQuote](request)(client, decoders.decodeGlobalQuoteF, logger, me)
+    get[F, GlobalQuote](request)(
+      client,
+      decoders.decodeGlobalQuoteF,
+      logger,
+      me
+    )
   }
 }
