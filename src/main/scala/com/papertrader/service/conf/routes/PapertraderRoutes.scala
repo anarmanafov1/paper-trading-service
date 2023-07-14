@@ -1,6 +1,7 @@
 package com.papertrader.service.conf.routes
 
-import cats.effect.Async
+import cats.MonadError
+import cats.effect.Ref
 import cats.implicits.{catsSyntaxApplicativeError, toFlatMapOps}
 import com.papertrader.service._
 import io.circe.generic.auto.exportEncoder
@@ -10,17 +11,32 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.circe._
 import org.typelevel.log4cats.Logger
 import cats.implicits._
+import com.papertrader.service.conf.ApplicationConfig
+import com.papertrader.service.models.Decoders
+import com.papertrader.service.util.clients.AlphaVantageStockClient
 import com.papertrader.service.util.controllers.ErrorResponse
 import com.papertrader.service.util.controllers.RequestValidation.{validateBodyAsItem, validateUserIdHeader}
+import org.http4s.client.Client
+
+import java.util.UUID
 
 object PapertraderRoutes {
 
-  def routes[F[_]: Async](stockService: StockService[F])(implicit logger: Logger[F]): HttpRoutes[F] = {
+  def routes[F[_]]()(
+    implicit logger: Logger[F],
+    me: MonadError[F, Throwable],
+    jsonDecoder: JsonDecoder[F],
+    client: Client[F],
+    appConf: ApplicationConfig,
+    decoders: Decoders[F],
+    stockClient: AlphaVantageStockClient[F],
+    basketRef: Ref[F, Map[UUID, Map[String, Int]]]
+  ): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "global-quote" / symbol =>
-        stockService.getGlobalQuote(symbol)
+        StockService.getGlobalQuote(symbol)
           .flatMap(v => Ok(v.asJson))
           .handleErrorWith {
             case HttpClientNotFoundError => NotFound(ErrorResponse(s"Stock with symbol $symbol not found.").asJson)
@@ -33,7 +49,7 @@ object PapertraderRoutes {
         for {
           item <- validateBodyAsItem(r)
           userId <- validateUserIdHeader(r)
-          _ <- stockService.addToBasket(item, userId)
+          _ <- StockService.addToBasket(item, userId)
           r <- Created()
         } yield r
       }.handleErrorWith {
@@ -47,7 +63,7 @@ object PapertraderRoutes {
       case r@GET -> Root / "basket" => {
         for {
           userId <- validateUserIdHeader(r)
-          basket <- stockService.viewBasket(userId)
+          basket <- StockService.viewBasket(userId)(me, basketRef)
           r <- Ok(basket.asJson)
         } yield r
       }.handleErrorWith {

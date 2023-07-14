@@ -5,8 +5,7 @@ import io.circe.{Decoder, HCursor}
 import org.http4s.EntityDecoder
 import org.http4s.circe.accumulatingJsonOf
 
-
-class Decoders[F[_]]()(implicit c: Concurrent[F]) {
+class Decoders[F[_]: Concurrent]() {
   implicit val decodeGlobalQuote: Decoder[GlobalQuote] = new Decoder[GlobalQuote] {
     final def apply(c: HCursor): Decoder.Result[GlobalQuote] = {
       val innerObject = c.downField("Global Quote")
@@ -18,5 +17,5 @@ class Decoders[F[_]]()(implicit c: Concurrent[F]) {
       } yield GlobalQuote(symbol, price, low, high)
     }
   }
-  implicit val decodeGlobalQuoteF: EntityDecoder[F, GlobalQuote] = accumulatingJsonOf[F, GlobalQuote](c, decodeGlobalQuote)
+  implicit val decodeGlobalQuoteF: EntityDecoder[F, GlobalQuote] = accumulatingJsonOf[F, GlobalQuote](Concurrent[F], decodeGlobalQuote)
 }

@@ -3,14 +3,26 @@ package com.papertrader.service
 import cats.MonadError
 import cats.effect.Ref
 import cats.implicits._
-import com.papertrader.service.models.{GlobalQuote, Item}
+import com.papertrader.service.conf.ApplicationConfig
+import com.papertrader.service.models.{Decoders, GlobalQuote, Item}
 import com.papertrader.service.util.clients.AlphaVantageStockClient
+import org.http4s.client.Client
+import org.typelevel.log4cats.Logger
 import java.util.UUID
 
-class StockService[F[_]](alphaVantageStockClient: AlphaVantageStockClient[F], basketRef: Ref[F, Map[UUID, Map[String, Int]]]) {
-  def getGlobalQuote(symbol: String): F[GlobalQuote] = alphaVantageStockClient.getGlobalQuote(symbol)
+object StockService {
+  def getGlobalQuote[F[_]](
+    symbol: String
+  )(
+    implicit client: Client[F],
+    stockClient: AlphaVantageStockClient[F],
+    appConf: ApplicationConfig,
+    logger: Logger[F],
+    me: MonadError[F, Throwable],
+    decoders: Decoders[F]
+  ): F[GlobalQuote] = stockClient.getGlobalQuote(symbol)
 
-  def addToBasket(item: Item, userId: UUID): F[Unit] =
+  def addToBasket[F[_]](item: Item, userId: UUID)(implicit basketRef: Ref[F, Map[UUID, Map[String, Int]]]): F[Unit] =
     basketRef.update(
       globalBasket => globalBasket.get(userId) match {
         case Some(userBasket) if userBasket.contains(item.symbol) =>
@@ -26,5 +38,6 @@ class StockService[F[_]](alphaVantageStockClient: AlphaVantageStockClient[F], ba
       }
     )
 
-  def viewBasket(userId: UUID)(implicit me: MonadError[F, Throwable]): F[Map[String, Int]] = basketRef.get.map(basket => basket.getOrElse(userId, Map.empty))
+  def viewBasket[F[_]](userId: UUID)(implicit me: MonadError[F, Throwable], basketRef: Ref[F, Map[UUID, Map[String, Int]]]): F[Map[String, Int]] =
+    basketRef.get.map(basket => basket.getOrElse(userId, Map.empty))
 }

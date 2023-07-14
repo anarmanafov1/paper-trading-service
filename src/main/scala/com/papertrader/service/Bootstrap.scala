@@ -11,6 +11,7 @@ import com.papertrader.service.models.Decoders
 import com.papertrader.service.util.clients.AlphaVantageStockClient
 import com.papertrader.service.util.logger.ApplicationLogger
 import org.typelevel.log4cats.Logger
+
 import java.util.UUID
 
 object Bootstrap {
@@ -18,18 +19,16 @@ object Bootstrap {
     implicit val decoders: Decoders[F] = new Decoders()
     implicit val client: Client[F] = JavaNetClientBuilder[F].create
     implicit val logger: Logger[F] = ApplicationLogger.getLogger[F]
+    implicit val stockClient: AlphaVantageStockClient[F] = new AlphaVantageStockClient[F] {}
 
     for {
       implicit0(appConf: ApplicationConfig) <- Resource.eval(ApplicationConfig.load())
       implicit0(basketRef: Ref[F, Map[UUID, Map[String, Int]]]) <- Resource.eval(Ref.of[F, Map[UUID, Map[String, Int]]](Map.empty))
-
-      alphaVantageStockClient = new AlphaVantageStockClient[F]()
-      stockService = new StockService[F](alphaVantageStockClient, basketRef)
       _ <-
         EmberServerBuilder.default[F]
           .withHost(ipv4"0.0.0.0")
           .withPort(port"8080")
-          .withHttpApp(PapertraderRoutes.routes(stockService).orNotFound)
+          .withHttpApp(PapertraderRoutes.routes().orNotFound)
           .build
     } yield ()
   }
