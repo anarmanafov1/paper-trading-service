@@ -7,7 +7,6 @@ import com.papertrader.service.conf.routes.PapertraderRoutes
 import org.http4s.client.{Client, JavaNetClientBuilder}
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
-import com.papertrader.service.models.Decoders
 import com.papertrader.service.util.clients.AlphaVantageStockClient
 import com.papertrader.service.util.logger.ApplicationLogger
 import org.typelevel.log4cats.Logger
@@ -15,7 +14,6 @@ import java.util.UUID
 
 object Bootstrap {
   def bootstrap[F[_]: Async]: Resource[F, Unit] = {
-    implicit val decoders: Decoders[F] = new Decoders()
     implicit val client: Client[F] = JavaNetClientBuilder[F].create
     implicit val logger: Logger[F] = ApplicationLogger.getLogger[F]
     implicit val stockClient: AlphaVantageStockClient[F] =

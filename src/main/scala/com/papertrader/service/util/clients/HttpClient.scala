@@ -3,18 +3,23 @@ package com.papertrader.service.util.clients
 import cats.MonadError
 import cats.implicits._
 import com.papertrader.service._
-import org.http4s.{EntityDecoder, Status, Uri}
+import io.circe.Decoder
+import org.http4s.circe.JsonDecoder
+import org.http4s.{Status, Uri}
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
+import cats.implicits.toFlatMapOps
+import org.http4s.circe._
 
 trait HttpClient {
   val baseUrl: Uri
 
   def get[F[_], A](uri: Uri)(implicit
       client: Client[F],
-      entityDecoder: EntityDecoder[F, A],
       logger: Logger[F],
-      me: MonadError[F, Throwable]
+      me: MonadError[F, Throwable],
+      jsonDecoder: JsonDecoder[F],
+      decoder: Decoder[A]
   ): F[A] = {
     val uriForLog = uri.withQueryParam("apikey", "####").renderString
     client
@@ -22,7 +27,8 @@ trait HttpClient {
         case r if r.status == Status.Ok =>
           for {
             _ <- logger.error(s"Got OK response for request: $uriForLog")
-            maybeParsed <- r.attemptAs[A].value
+            json <- r.asJson
+            maybeParsed <- me.fromEither(json.as[A].attempt)
             parsed <- maybeParsed match {
               case Left(decodeFailure) =>
                 logger.error(

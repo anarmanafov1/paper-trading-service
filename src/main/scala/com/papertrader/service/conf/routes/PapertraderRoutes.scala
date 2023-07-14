@@ -12,7 +12,6 @@ import org.http4s.circe._
 import org.typelevel.log4cats.Logger
 import cats.implicits._
 import com.papertrader.service.conf.ApplicationConfig
-import com.papertrader.service.models.Decoders
 import com.papertrader.service.util.clients.AlphaVantageStockClient
 import com.papertrader.service.util.controllers.ErrorResponse
 import com.papertrader.service.util.controllers.RequestValidation.{
@@ -31,7 +30,6 @@ object PapertraderRoutes {
       jsonDecoder: JsonDecoder[F],
       client: Client[F],
       appConf: ApplicationConfig,
-      decoders: Decoders[F],
       stockClient: AlphaVantageStockClient[F],
       basketRef: Ref[F, Map[UUID, Map[String, Int]]]
   ): HttpRoutes[F] = {

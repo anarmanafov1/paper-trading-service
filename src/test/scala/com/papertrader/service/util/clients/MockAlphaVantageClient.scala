@@ -2,7 +2,7 @@ package com.papertrader.service.util.clients
 import cats.MonadError
 import com.papertrader.Fixture
 import com.papertrader.service.conf.ApplicationConfig
-import com.papertrader.service.models.{Decoders, GlobalQuote}
+import com.papertrader.service.models.GlobalQuote
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
 import com.papertrader.service.{
@@ -11,6 +11,7 @@ import com.papertrader.service.{
   HttpClientParseError,
   HttpClientServerError
 }
+import org.http4s.circe.JsonDecoder
 
 trait MockAlphaVantageClient
     extends AlphaVantageStockClient[Either[Error, *]]
@@ -20,7 +21,7 @@ trait MockAlphaVantageClient
       appConf: ApplicationConfig,
       logger: Logger[Either[Error, *]],
       me: MonadError[Either[Error, *], Throwable],
-      decoders: Decoders[Either[Error, *]]
+      jsonDecoder: JsonDecoder[Either[Error, *]]
   ): Either[Error, GlobalQuote] =
     symbol match {
       case MockAlphaVantageClient.stockClientSuccessCase => Right(globalQuote)

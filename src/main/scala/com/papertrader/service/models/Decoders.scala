@@ -1,11 +1,8 @@
 package com.papertrader.service.models
 
-import cats.effect.Async
 import io.circe.{Decoder, HCursor}
-import org.http4s.EntityDecoder
-import org.http4s.circe.accumulatingJsonOf
 
-class Decoders[F[_]: Async]() {
+object Decoders {
   implicit val decodeGlobalQuote: Decoder[GlobalQuote] =
     new Decoder[GlobalQuote] {
       final def apply(c: HCursor): Decoder.Result[GlobalQuote] = {
@@ -18,6 +15,4 @@ class Decoders[F[_]: Async]() {
         } yield GlobalQuote(symbol, price, low, high)
       }
     }
-  implicit val decodeGlobalQuoteF: EntityDecoder[F, GlobalQuote] =
-    accumulatingJsonOf[F, GlobalQuote](Async[F], decodeGlobalQuote)
 }

@@ -3,12 +3,14 @@ package com.papertrader
 import cats.MonadError
 import cats.effect.Ref
 import com.papertrader.service.conf.ApplicationConfig
-import com.papertrader.service.models.{Decoders, GlobalQuote}
+import com.papertrader.service.models.GlobalQuote
 import org.http4s.client.Client
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.typelevel.log4cats.Logger
+
 import java.util.UUID
 import com.papertrader.service.Error
+import org.http4s.circe.JsonDecoder
 
 trait Fixture {
   implicit val me: MonadError[Either[Error, *], Throwable] =
@@ -17,8 +19,8 @@ trait Fixture {
     mock[Client[Either[Error, *]]]
   implicit val mockConf: ApplicationConfig = mock[ApplicationConfig]
   implicit val logger: Logger[Either[Error, *]] = mock[Logger[Either[Error, *]]]
-  implicit val decoders: Decoders[Either[Error, *]] =
-    mock[Decoders[Either[Error, *]]]
+  implicit val decoders: JsonDecoder[Either[Error, *]] =
+    mock[JsonDecoder[Either[Error, *]]]
   implicit val fakeBasketRef
       : Ref[Either[Error, *], Map[UUID, Map[String, Int]]] =
     mock[Ref[Either[Error, *], Map[UUID, Map[String, Int]]]]
