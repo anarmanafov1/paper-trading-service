@@ -25,16 +25,15 @@ object StockService {
   def addToBasket[F[_]](item: Item, userId: UUID)(implicit
       basketRef: Ref[F, Map[UUID, Map[String, Int]]]
   ): F[Unit] =
-    basketRef.update(addToBasketFunc(item, userId, _))
+    basketRef.update(addToBasketPure(item, userId, _))
 
   def viewBasket[F[_]](userId: UUID)(implicit
       me: MonadError[F, Throwable],
       basketRef: Ref[F, Map[UUID, Map[String, Int]]]
   ): F[Map[String, Int]] =
-    basketRef.get.map(viewBasketFunc(userId, _))
+    basketRef.get.map(viewBasketPure(userId, _))
 
-  val addToBasketFunc =
-    (item: Item, userId: UUID, globalBasket: Map[UUID, Map[String, Int]]) =>
+  def addToBasketPure(item: Item, userId: UUID, globalBasket: Map[UUID, Map[String, Int]]): Map[UUID, Map[String, Int]] =
       globalBasket.get(userId) match {
         case Some(userBasket) if userBasket.contains(item.symbol) =>
           val newQuantity = (userBasket(item.symbol) + item.quantity)
@@ -48,7 +47,6 @@ object StockService {
           globalBasket + (userId -> newUserBasket)
       }
 
-  val viewBasketFunc = (userId: UUID, basket: Map[UUID, Map[String, Int]]) =>
+  def viewBasketPure(userId: UUID, basket: Map[UUID, Map[String, Int]]): Map[String, Int] =
     basket.getOrElse(userId, Map.empty)
-
 }
