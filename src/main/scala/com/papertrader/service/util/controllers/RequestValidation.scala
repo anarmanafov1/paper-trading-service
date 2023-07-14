@@ -13,6 +13,7 @@ import org.http4s.circe._
 import io.circe.generic.auto._
 import java.util.UUID
 import scala.util.Try
+
 object RequestValidation {
   def validateUserIdHeader[F[_]](r: Request[F])(implicit me: MonadError[F, Throwable]): F[UUID] = for {
     userHeader: Option[NonEmptyList[Header.Raw]] <- me.pure(r.headers.get(CIString("user-id")))
