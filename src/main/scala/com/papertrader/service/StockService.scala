@@ -15,12 +15,12 @@ object StockService {
   def getGlobalQuote[F[_]](
       symbol: String
   )(implicit
-    client: Client[F],
-    stockClient: StockClient[F],
-    appConf: ApplicationConfig,
-    logger: Logger[F],
-    me: MonadError[F, Throwable],
-    jsonDecoder: JsonDecoder[F]
+      client: Client[F],
+      stockClient: StockClient[F],
+      appConf: ApplicationConfig,
+      logger: Logger[F],
+      me: MonadError[F, Throwable],
+      jsonDecoder: JsonDecoder[F]
   ): F[GlobalQuote] = stockClient.getGlobalQuote(symbol)
 
   def addToBasket[F[_]](item: Item, userId: UUID)(implicit

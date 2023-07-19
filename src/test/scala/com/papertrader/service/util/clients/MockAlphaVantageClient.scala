@@ -14,7 +14,7 @@ import com.papertrader.service.{
 import org.http4s.circe.JsonDecoder
 
 trait MockAlphaVantageClient
-    extends AlphaVantageStockClient[Either[Error, *]]
+    extends StockClient[Either[Error, *]]
     with Fixture {
   override def getGlobalQuote(symbol: String)(implicit
       client: Client[Either[Error, *]],

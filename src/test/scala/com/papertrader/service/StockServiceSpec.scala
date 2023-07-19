@@ -9,8 +9,7 @@ import java.util.UUID
 
 class StockServiceSpec extends CatsEffectSuite with Fixture with Matchers {
 
-  implicit val alphaVantageStockClient
-      : StockClient[Either[Error, *]] =
+  implicit val alphaVantageStockClient: StockClient[Either[Error, *]] =
     new MockAlphaVantageClient {}
 
   test(

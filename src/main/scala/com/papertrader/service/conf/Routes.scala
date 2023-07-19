@@ -6,7 +6,10 @@ import cats.implicits._
 import com.papertrader.service._
 import com.papertrader.service.util.clients.StockClient
 import com.papertrader.service.util.controllers.ErrorResponse
-import com.papertrader.service.util.controllers.RequestValidation.{validateBodyAsItem, validateUserIdHeader}
+import com.papertrader.service.util.controllers.RequestValidation.{
+  validateBodyAsItem,
+  validateUserIdHeader
+}
 import io.circe.generic.auto.exportEncoder
 import io.circe.syntax.EncoderOps
 import org.http4s.HttpRoutes
