@@ -52,7 +52,7 @@ object Routes {
               )
             case e: Throwable =>
               logger.error(
-                s"Unhandles error with message: ${e.getMessage}"
+                s"Unhandled error with message: ${e.getMessage}"
               ) *> InternalServerError(
                 ErrorResponse("Something went wrong.").asJson
               )
