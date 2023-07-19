@@ -87,11 +87,17 @@ object Routes {
           ErrorResponse("Failed to retrieve stock.").asJson
         )
       case MalformedBodyError(msg) =>
-        logger.error(msg) *> BadRequest(ErrorResponse(msg).asJson)
+        logger.error(
+          s"validation error with msg: $msg, responding with bad request response"
+        ) *> BadRequest(ErrorResponse(msg).asJson)
       case MissingHeaderError(msg) =>
-        logger.error(msg) *> BadRequest(ErrorResponse(msg).asJson)
+        logger.error(
+          s"validation error with msg: $msg, responding with bad request response"
+        ) *> BadRequest(ErrorResponse(msg).asJson)
       case InvalidHeaderError(msg) =>
-        logger.error(msg) *> BadRequest(ErrorResponse(msg).asJson)
+        logger.error(
+          s"validation error with msg: $msg, responding with bad request response"
+        ) *> BadRequest(ErrorResponse(msg).asJson)
       case RefReadError(msg) =>
         logger.error(
           s"Error writing to ref basket, msg: $msg"

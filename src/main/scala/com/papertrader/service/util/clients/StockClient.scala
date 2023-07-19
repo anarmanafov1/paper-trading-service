@@ -1,11 +1,7 @@
 package com.papertrader.service.util.clients
 
 import cats.MonadError
-import cats.implicits.{
-  catsSyntaxApplicativeError,
-  catsSyntaxApply,
-  catsSyntaxMonadError
-}
+import cats.implicits._
 import com.papertrader.service._
 import com.papertrader.service.conf.ApplicationConfig
 import com.papertrader.service.models.GlobalQuote
@@ -51,6 +47,11 @@ trait StockClient[F[_]] extends HttpClient {
           logger.error("Stock client parsing error") *> me.raiseError(
             StockClientInternalError(msg)
           )
+        case e: Throwable =>
+          logger.error(s"Unhandled stock client error: ${e.getMessage}") *> me
+            .raiseError(
+              HttpClientServerError(s"HTTP Client error: ${e.getMessage}")
+            )
       }
   }
 }
