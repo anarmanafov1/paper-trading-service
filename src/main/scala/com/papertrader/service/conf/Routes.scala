@@ -1,36 +1,30 @@
-package com.papertrader.service.conf.routes
+package com.papertrader.service.conf
 
 import cats.MonadError
 import cats.effect.Ref
-import cats.implicits.{catsSyntaxApplicativeError, toFlatMapOps}
+import cats.implicits._
 import com.papertrader.service._
+import com.papertrader.service.util.clients.StockClient
+import com.papertrader.service.util.controllers.ErrorResponse
+import com.papertrader.service.util.controllers.RequestValidation.{validateBodyAsItem, validateUserIdHeader}
 import io.circe.generic.auto.exportEncoder
 import io.circe.syntax.EncoderOps
 import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
 import org.http4s.circe._
-import org.typelevel.log4cats.Logger
-import cats.implicits._
-import com.papertrader.service.conf.ApplicationConfig
-import com.papertrader.service.util.clients.AlphaVantageStockClient
-import com.papertrader.service.util.controllers.ErrorResponse
-import com.papertrader.service.util.controllers.RequestValidation.{
-  validateBodyAsItem,
-  validateUserIdHeader
-}
 import org.http4s.client.Client
-
+import org.http4s.dsl.Http4sDsl
+import org.typelevel.log4cats.Logger
 import java.util.UUID
 
-object PapertraderRoutes {
+object Routes {
 
-  def routes[F[_]]()(implicit
+  def all[F[_]]()(implicit
       logger: Logger[F],
       me: MonadError[F, Throwable],
       jsonDecoder: JsonDecoder[F],
       client: Client[F],
       appConf: ApplicationConfig,
-      stockClient: AlphaVantageStockClient[F],
+      stockClient: StockClient[F],
       basketRef: Ref[F, Map[UUID, Map[String, Int]]]
   ): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}

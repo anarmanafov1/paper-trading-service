@@ -5,7 +5,7 @@ import cats.effect.Ref
 import cats.implicits._
 import com.papertrader.service.conf.ApplicationConfig
 import com.papertrader.service.models.{GlobalQuote, Item}
-import com.papertrader.service.util.clients.AlphaVantageStockClient
+import com.papertrader.service.util.clients.StockClient
 import org.http4s.circe.JsonDecoder
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
@@ -15,12 +15,12 @@ object StockService {
   def getGlobalQuote[F[_]](
       symbol: String
   )(implicit
-      client: Client[F],
-      stockClient: AlphaVantageStockClient[F],
-      appConf: ApplicationConfig,
-      logger: Logger[F],
-      me: MonadError[F, Throwable],
-      jsonDecoder: JsonDecoder[F]
+    client: Client[F],
+    stockClient: StockClient[F],
+    appConf: ApplicationConfig,
+    logger: Logger[F],
+    me: MonadError[F, Throwable],
+    jsonDecoder: JsonDecoder[F]
   ): F[GlobalQuote] = stockClient.getGlobalQuote(symbol)
 
   def addToBasket[F[_]](item: Item, userId: UUID)(implicit

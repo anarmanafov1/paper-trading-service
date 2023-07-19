@@ -12,7 +12,6 @@ import cats.implicits.toFlatMapOps
 import org.http4s.circe._
 
 trait HttpClient {
-  val baseUrl: Uri
 
   def get[F[_], A](uri: Uri)(implicit
       client: Client[F],

@@ -10,9 +10,9 @@ import org.http4s.implicits.http4sLiteralsSyntax
 import org.typelevel.log4cats.Logger
 import com.papertrader.service.models.Decoders.decodeGlobalQuote
 
-trait AlphaVantageStockClient[F[_]] extends HttpClient {
+trait StockClient[F[_]] extends HttpClient {
 
-  val baseUrl: Uri = uri"https://www.alphavantage.co/query"
+  private val baseUrl: Uri = uri"https://www.alphavantage.co/query"
 
   def getGlobalQuote(
       symbol: String
