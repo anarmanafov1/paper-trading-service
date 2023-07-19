@@ -38,7 +38,7 @@ object Routes {
         StockService
           .getGlobalQuote(symbol)
           .flatMap(v => Ok(v.asJson))
-          .handleErrorWith(errorHandler(_))
+          .handleErrorWith(handleError(_))
 
       case r @ POST -> Root / "basket" =>
         {
@@ -48,7 +48,7 @@ object Routes {
             _ <- StockService.addToBasket(item, userId)
             r <- Created()
           } yield r
-        }.handleErrorWith(errorHandler(_))
+        }.handleErrorWith(handleError(_))
 
       case r @ GET -> Root / "basket" =>
         {
@@ -57,11 +57,11 @@ object Routes {
             basket <- StockService.viewBasket(userId)(me, basketRef)
             r <- Ok(basket.asJson)
           } yield r
-        }.handleErrorWith(errorHandler(_))
+        }.handleErrorWith(handleError(_))
     }
   }
 
-  def errorHandler[F[_]](e: Throwable)(implicit
+  private def handleError[F[_]](e: Throwable)(implicit
       logger: Logger[F],
       me: MonadError[F, Throwable],
       dsl: Http4sDsl[F]
@@ -80,9 +80,9 @@ object Routes {
         ) *> InternalServerError(
           ErrorResponse("Error processing stock").asJson
         )
-      case _: HttpClientServerError =>
+      case HttpClientServerError(msg) =>
         logger.error(
-          "Stock client error, returning error response"
+          s"Stock client error with msg: $msg, returning error response"
         ) *> InternalServerError(
           ErrorResponse("Failed to retrieve stock.").asJson
         )
