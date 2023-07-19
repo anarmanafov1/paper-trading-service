@@ -1,6 +1,12 @@
 package com.papertrader.service.util.clients
 
 import cats.MonadError
+import cats.implicits.{
+  catsSyntaxApplicativeError,
+  catsSyntaxApply,
+  catsSyntaxMonadError
+}
+import com.papertrader.service._
 import com.papertrader.service.conf.ApplicationConfig
 import com.papertrader.service.models.GlobalQuote
 import org.http4s.Uri
@@ -33,5 +39,18 @@ trait StockClient[F[_]] extends HttpClient {
         )
       )
     get[F, GlobalQuote](request)
+      .handleErrorWith {
+        case HttpClientNotFoundError =>
+          logger.info(s"Failed to retrieve stock with symbol $symbol") *> me
+            .raiseError(StockNotFoundError(symbol))
+        case HttpClientParseError =>
+          logger.error("Stock client parsing error") *> me.raiseError(
+            StockClientInternalError("Error parsing response")
+          )
+        case HttpClientServerError(msg) =>
+          logger.error("Stock client parsing error") *> me.raiseError(
+            StockClientInternalError(msg)
+          )
+      }
   }
 }

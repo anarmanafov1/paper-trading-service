@@ -24,15 +24,20 @@ object StockService {
   ): F[GlobalQuote] = stockClient.getGlobalQuote(symbol)
 
   def addToBasket[F[_]](item: Item, userId: UUID)(implicit
-      basketRef: Ref[F, Map[UUID, Map[String, Int]]]
+      basketRef: Ref[F, Map[UUID, Map[String, Int]]],
+      me: MonadError[F, Throwable]
   ): F[Unit] =
-    basketRef.update(addToBasketPure(item, userId, _))
+    basketRef
+      .update(addToBasketPure(item, userId, _))
+      .adaptError(e => RefWriteError(e.getMessage))
 
   def viewBasket[F[_]](userId: UUID)(implicit
       me: MonadError[F, Throwable],
       basketRef: Ref[F, Map[UUID, Map[String, Int]]]
   ): F[Map[String, Int]] =
-    basketRef.get.map(viewBasketPure(userId, _))
+    basketRef.get
+      .map(viewBasketPure(userId, _))
+      .adaptError(e => RefWriteError(e.getMessage))
 
   def addToBasketPure(
       item: Item,
