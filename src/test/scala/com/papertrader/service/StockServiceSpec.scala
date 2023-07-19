@@ -52,14 +52,14 @@ class StockServiceSpec extends CatsEffectSuite with Fixture with Matchers {
   }
 
   test(
-    "service.viewBasketFunc returns non empty basket for user when one exists"
+    "service.viewBasketPure returns non empty basket for user when one exists"
   ) {
     StockService.viewBasketPure(userId, Map(userId -> testBasket)) should equal(
       testBasket
     )
   }
 
-  test("service.viewBasketFunc returns empty basket for user when non exists") {
+  test("service.viewBasketPure returns empty basket for user when non exists") {
     StockService.viewBasketPure(
       userId2,
       Map(userId -> testBasket)
@@ -69,7 +69,7 @@ class StockServiceSpec extends CatsEffectSuite with Fixture with Matchers {
   val b: Map[UUID, Map[String, Int]] = Map(userId -> Map("nvda" -> 20))
 
   test(
-    "service.addToBasketFunc adds to users basket when user basket is found and already owns specified stock (top up)"
+    "service.addToBasketPure adds to users basket when user basket is found and already owns specified stock (top up)"
   ) {
     StockService.addToBasketPure(Item("nvda", 5), userId, b) should equal(
       Map(userId -> Map("nvda" -> (25)))
@@ -77,7 +77,7 @@ class StockServiceSpec extends CatsEffectSuite with Fixture with Matchers {
   }
 
   test(
-    "service.addToBasketFunc adds to users basket when user basket is found and does not own specified stock"
+    "service.addToBasketPure adds to users basket when user basket is found and does not own specified stock"
   ) {
     StockService.addToBasketPure(Item("ibm", 5), userId, b) should equal(
       Map(userId -> Map("nvda" -> (20), "ibm" -> 5))
@@ -85,7 +85,7 @@ class StockServiceSpec extends CatsEffectSuite with Fixture with Matchers {
   }
 
   test(
-    "service.addToBasketFunc adds to users basket when user basket is not found"
+    "service.addToBasketPure adds to users basket when user basket is not found"
   ) {
     StockService.addToBasketPure(Item("ibm", 5), userId2, b) should equal(
       Map(userId -> Map("nvda" -> 20), userId2 -> Map("ibm" -> 5))

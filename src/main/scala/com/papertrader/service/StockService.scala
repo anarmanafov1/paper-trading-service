@@ -9,7 +9,6 @@ import com.papertrader.service.util.clients.AlphaVantageStockClient
 import org.http4s.circe.JsonDecoder
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
-
 import java.util.UUID
 
 object StockService {
